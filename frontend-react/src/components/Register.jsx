@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faSpinner} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const [formData, setFormData] = useState({ username: '', email: '', password: '' })
     const [errors, setErrors] = useState({});
     const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
     const handlechange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
@@ -28,6 +29,7 @@ const Register = () => {
             setSuccess(true);
             console.log("Server Response:", response.data);
             console.log("Registration successful!");
+            navigate('/login');
 
         } catch (error) {
             setErrors(error.response.data);
@@ -57,7 +59,7 @@ const Register = () => {
                             </div>
                             {success && <div className="alert alert-success mb-3">Registration successful!</div>}
                             {loading ?
-                                (<button type='submit' className='btn btn-info d-block mx-auto' disabled><FontAwesomeIcon icon={faSpinner} spin className='me-2'/>Please Wait...</button>) :
+                                (<button type='submit' className='btn btn-info d-block mx-auto' disabled><FontAwesomeIcon icon={faSpinner} spin className='me-2' />Please Wait...</button>) :
                                 (<button type='submit' className='btn btn-info d-block mx-auto'>Register</button>)}
                         </form>
                     </div>
