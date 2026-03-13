@@ -22,7 +22,10 @@ const Header = () => {
                 <div>
                     {isLoggedIn ? (
                         <>
-                            <span className='text-light text-capitalize me-3 fs-6'>{username}</span>
+                            <span className='text-light text-capitalize fs-6'>{username}</span>
+                            &nbsp;
+                            <Button text='Dashboard' color="btn-outline-info" path="dashboard" />
+                            &nbsp;
                             <button className="btn btn-danger" onClick={handlelogout}>Logout</button>
                         </>) :
                         (

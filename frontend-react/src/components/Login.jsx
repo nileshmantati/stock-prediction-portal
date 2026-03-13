@@ -28,7 +28,7 @@ const Login = () => {
             localStorage.setItem('username', formData.username);
             console.log("Login successful!");
             setIsLoggedIn(true);
-            navigate('/')
+            navigate('/dashboard');
 
         } catch (error) {
             setErrors(error.response.data);
