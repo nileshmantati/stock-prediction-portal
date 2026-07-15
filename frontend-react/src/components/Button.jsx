@@ -1,10 +1,9 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Button = (props) => {
+const Button = ({ path, color, text }) => {
     return (
         <>
-            <Link to={props.path} className={`btn ${props.color}`}>{props.text}</Link>
+            <Link to={path} className={`btn ${color}`}>{text}</Link>
         </>
     )
 }

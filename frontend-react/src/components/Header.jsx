@@ -8,31 +8,31 @@ const Header = () => {
     const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
     const navigate = useNavigate();
     const username = localStorage.getItem('username') || 'User';
-    const handlelogout = () => {
+    const handleLogout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        setIsLoggedIn(false)
-        console.log("Logout successful!")
-        navigate('/login')
-    }
+        localStorage.removeItem('username');
+        setIsLoggedIn(false);
+        navigate('/login');
+    };
     return (
         <>
-            <nav className='navbar container py-3 align-items-start'>
+            <nav className='navbar public-navbar container-fluid px-4 py-3 align-items-center'>
                 <Link className='navbar-brand text-light' to='/'>Stock Predictions Portal</Link>
                 <div>
                     {isLoggedIn ? (
                         <>
                             <span className='text-light text-capitalize fs-6'>{username}</span>
                             &nbsp;
-                            <Button text='Dashboard' color="btn-outline-info" path="dashboard" />
+                            <Button text='Dashboard' color="btn-outline-info" path="/dashboard" />
                             &nbsp;
-                            <button className="btn btn-danger" onClick={handlelogout}>Logout</button>
+                            <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
                         </>) :
                         (
                             <>
-                                <Button text='Login' color="btn-outline-info" path="login" />
+                                <Button text='Login' color="btn-outline-info" path="/login" />
                                 &nbsp;
-                                <Button text='Register' color="btn-info" path="register" />
+                                <Button text='Register' color="btn-info" path="/register" />
                             </>
                         )
                     }
