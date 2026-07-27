@@ -9,10 +9,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
-/* ──────────────────────────────────────────
-   Sub-components
-────────────────────────────────────────── */
-
 const MetricCard = ({ label, value, iconClass, accent }) => (
     <div className={`metric-card accent-${accent}`}>
         <div className="d-flex align-items-center justify-content-between">
@@ -169,6 +165,7 @@ const Dashboard = () => {
             await axiosInstance.delete('history/');
             setHistory([]);
         } catch (err) {
+            console.error('History clearing error:', err);
             setHistoryError('Failed to clear history.');
         } finally {
             setClearingHistory(false);

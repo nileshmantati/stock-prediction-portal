@@ -1,0 +1,11 @@
+{
+  "name": "stockvision-portal-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root package script delegator for StockVision prediction portal",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend-react",
+    "build": "npm run build --prefix frontend-react",
+    "lint": "npm run lint --prefix frontend-react"
+  }
+}

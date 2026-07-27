@@ -50,6 +50,11 @@ class StockPredictionAPIView(APIView):
         if df.empty:
             return Response({"error": "No data found for the given ticker."}, status=status.HTTP_404_NOT_FOUND)
         df.dropna(inplace=True)
+        if len(df) < 150:
+            return Response(
+                {"error": f"Not enough historical trading days ({len(df)}) for ticker {ticker}. At least 150 trading days are required for accurate LSTM prediction."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         df = df.reset_index()
 
         # Basic Close Price plot
