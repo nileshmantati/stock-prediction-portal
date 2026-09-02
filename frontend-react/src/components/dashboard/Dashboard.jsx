@@ -1,13 +1,14 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext, useRef } from 'react';
 import axiosInstance from '../../axiosinstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faChartLine, faSpinner, faSearch, faSignOutAlt,
     faTachometerAlt, faHistory, faCog,
     faExclamationTriangle, faCheckCircle, faArrowRight,
-    faTrash, faCalendarAlt, faClock, faRedo
+    faTrash, faCalendarAlt, faClock, faRedo, faBars, faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../AuthProvider';
 
 const MetricCard = ({ label, value, iconClass, accent }) => (
     <div className={`metric-card accent-${accent}`}>
@@ -84,8 +85,12 @@ const Dashboard = () => {
     const [historyLoading, setHistoryLoading] = useState(false);
     const [historyError, setHistoryError] = useState(null);
     const [clearingHistory, setClearingHistory] = useState(false);
+    // Fix #29: Mobile sidebar toggle state
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const navigate = useNavigate();
+    const { setIsLoggedIn } = useContext(AuthContext);
+    const formRef = useRef(null);
     const username = localStorage.getItem('username') || 'User';
     const avatarLetter = username.charAt(0).toUpperCase();
 
@@ -122,6 +127,8 @@ const Dashboard = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('username');
+        // Fix #7: Update AuthContext so PublicRoute guards work after logout
+        setIsLoggedIn(false);
         navigate('/login');
     };
 
@@ -131,6 +138,13 @@ const Dashboard = () => {
         setLoading(true);
         setError(null);
         setPredictionDone(false);
+        setPlot(null);
+        setMA100Plot(null);
+        setMA200Plot(null);
+        setPrediction(null);
+        setMSE(null);
+        setRMSE(null);
+        setR2(null);
         try {
             const response = await axiosInstance.post('predict/', { ticker });
             if (response.data.error) { setError(response.data.error); return; }
@@ -155,6 +169,11 @@ const Dashboard = () => {
     const handleRerun = (tickerSymbol) => {
         setTicker(tickerSymbol);
         setView('prediction');
+        // Fix #8: Auto-submit the prediction after a short delay
+        // (wait for state update and view switch to complete)
+        setTimeout(() => {
+            if (formRef.current) formRef.current.requestSubmit();
+        }, 100);
     };
 
     /* ── Clear all history */
@@ -188,8 +207,13 @@ const Dashboard = () => {
     return (
         <div className="dashboard-root">
 
+            {/* Fix #29: Mobile sidebar overlay */}
+            {sidebarOpen && (
+                <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+            )}
+
             {/* ═══════════ SIDEBAR ═══════════ */}
-            <aside className="dashboard-sidebar">
+            <aside className={`dashboard-sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-brand d-flex align-items-center gap-2">
                     <div className="sidebar-brand-icon">📈</div>
                     <div>
@@ -248,6 +272,11 @@ const Dashboard = () => {
             {/* ═══════════ MAIN ═══════════ */}
             <main className="dashboard-main">
 
+                {/* Fix #29: Mobile hamburger menu button */}
+                <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+                    <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} />
+                </button>
+
                 {/* Top bar */}
                 <div className="dashboard-topbar d-flex align-items-center justify-content-between">
                     <div>
@@ -281,7 +310,7 @@ const Dashboard = () => {
                                 <p style={{ fontSize: '0.8rem', color: '#8b949e', marginBottom: '1.25rem' }}>
                                     Supports NYSE &amp; NASDAQ — e.g. AAPL, TSLA, GOOGL, INFY.NS
                                 </p>
-                                <form onSubmit={handleSubmit}>
+                                <form ref={formRef} onSubmit={handleSubmit}>
                                     <div className="d-flex gap-3 flex-wrap">
                                         <div className="ticker-input-wrapper flex-grow-1">
                                             <FontAwesomeIcon icon={faSearch} className="ticker-input-icon" />

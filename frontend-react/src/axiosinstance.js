@@ -34,7 +34,9 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true;
             const refreshtoken = localStorage.getItem('refresh_token');
             try {
-                const response = await axiosInstance.post('token/refresh/', { refresh: refreshtoken });
+                // Fix #14: Use bare axios (not axiosInstance) to avoid interceptor loop
+                const refreshUrl = `${baseURL.replace(/\/+$/, '')}/token/refresh/`;
+                const response = await axios.post(refreshUrl, { refresh: refreshtoken });
                 localStorage.setItem('access_token', response.data.access);
                 originalRequest.headers['Authorization'] = `Bearer ${response.data.access}`;
                 return axiosInstance(originalRequest);

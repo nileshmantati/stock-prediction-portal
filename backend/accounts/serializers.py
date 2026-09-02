@@ -6,6 +6,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email','password']
+
+    def validate_email(self, value):
+        """Enforce unique email addresses (Django's User model does not by default)."""
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
         
     def create(self, validated_data):
         user = User.objects.create_user(

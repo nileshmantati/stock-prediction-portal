@@ -21,6 +21,7 @@ services:
       # Persist generated prediction plot images across restarts
       - media_data:/app/media
       # Persist the SQLite database (swap for Postgres in real prod)
+      # Django settings: DATABASES.NAME = BASE_DIR / 'db' / 'db.sqlite3'
       - db_data:/app/db
     expose:
       - "8000"          # Internal only — nginx proxies to it

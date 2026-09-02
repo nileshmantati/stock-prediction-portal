@@ -24,5 +24,7 @@ urlpatterns = [
     path('api/v1/', include('api.urls'))
 ] 
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in all environments.
+# In production, nginx proxies /media/ to gunicorn, so the URL
+# pattern must be registered regardless of the DEBUG setting.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

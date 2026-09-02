@@ -83,7 +83,9 @@ WSGI_APPLICATION = 'predictions_portal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # Fix #11: Place inside db/ subdirectory to align with Docker
+        # volume mount (db_data:/app/db) so data persists across restarts.
+        'NAME': BASE_DIR / 'db' / 'db.sqlite3',
     }
 }
 
