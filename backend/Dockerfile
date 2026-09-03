@@ -26,6 +26,4 @@ RUN python manage.py collectstatic --noinput || true
 EXPOSE 8000
 
 # Run migrations then start gunicorn
-# --workers 2: safe default for a CPU-bound ML app
-# --timeout 180: ML inference can take > 60 s
-CMD ["sh", "-c", "python manage.py migrate && gunicorn predictions_portal.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 180 --access-logfile -"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn predictions_portal.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 1 --threads 2 --timeout 300 --access-logfile - --error-logfile -"]
