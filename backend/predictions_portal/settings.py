@@ -100,6 +100,7 @@ if config('DATABASE_URL', default=None):
         default=config('DATABASE_URL'),
         conn_max_age=600,
         conn_health_checks=True,
+        ssl_require=True, # Added this line for Neon SSL requirement
     )
 
 
